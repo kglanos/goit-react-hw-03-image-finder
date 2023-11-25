@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import Modal from './Modal/Modal';
 
-export class App extends Component {
+class App extends Component {
     state = {
         inputValue: '',
         modalImage: '',
@@ -9,30 +11,37 @@ export class App extends Component {
         page: 1,
     };
 
-    handleFormSubmit = (inputValue) => {
-        this.setState({ inputValue, page: 1 });
+    getInputValue = (handleValue) => {
+        this.setState({ inputValue: handleValue, page: 1 })
     }
 
-    /* handleLoadMore = () => {
-        this.setState((prevState) => ({ page: prevState.page + 1 }));
+    toggleModal = () => {
+        this.setState(({ showModal }) => ({ showModal: !showModal }))
     }
 
-    handleModal = (modalImage) => {
-        this.setState({ modalImage, showModal: true });
+    getLargeImg = url => {
+        this.toggleModal();
+        this.setState({ modalImg: url });
     }
 
-    closeModal = () => {
-        this.setState({ showModal: false });
-    } */
+    loadMoreBtn = () => {
+        this.setState(prevState => ({
+            page: prevState.page + 1,
+            }));
+        }
+
 
     render() {
+        const { modalImg, showModal ,page} = this.state;
+
         return (
-            <div>
-                <Searchbar onSubmit={this.handleFormSubmit} />
-                {/* <ImageGallery inputValue={this.state.inputValue} page={this.state.page} handleModal={this.handleModal} />
-                {this.state.showModal && <Modal modalImage={this.state.modalImage} closeModal={this.closeModal} />}
-                {this.state.inputValue && <Button handleLoadMore={this.handleLoadMore} />} */}
-            </div>
-        );
-    };
+            <>
+                <Searchbar getInputValue={this.getInputValue}/>
+                <ImageGallery inputValue={this.state.inputValue} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
+                {showModal && <Modal url={modalImg} onClose={this.toggleModal} />}
+            </>
+        )
+    }
 }
+
+export default App;
